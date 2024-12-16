@@ -29,6 +29,10 @@ public class Rental {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date returnDate;
 
+    @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    private Date actualReturnDate;
+
     private double rentalFee;
 
     // Getters and Setters
@@ -70,6 +74,14 @@ public class Rental {
 
     public void setReturnDate(Date returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public Date getActualReturnDate()
+    {
+        return actualReturnDate;
+    }
+    public void setActualReturnDate(Date actualReturnDate) {
+        this.actualReturnDate = actualReturnDate;
     }
 
     public double getRentalFee() {

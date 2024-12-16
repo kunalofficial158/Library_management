@@ -3,6 +3,7 @@ package com.book.Library.service;
 import com.book.Library.model.Rental;
 import com.book.Library.repository.RentalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -59,20 +60,32 @@ public class RentalService {
         Optional<Rental> rental = rentalRepository.findById(id);
         if (rental.isPresent()) {
             Rental returnedRental = rental.get();
-            returnedRental.setReturnDate(new Date()); // Set the current date as the return date
+            returnedRental.setActualReturnDate(new Date()); // Use a new field to mark actual return date
             return rentalRepository.save(returnedRental);
         } else {
             throw new RuntimeException("Rental not found with id " + id);
         }
     }
 
+//    @Scheduled(cron = "0 */5 * * * ?") //for 5 minutes
+    @Scheduled(cron = "0 0 0 * * ?") // for midnight
+    public void checkAndReturnBooks() {
+        List<Rental> rentals = rentalRepository.findAll();
+        Date today = new Date();
+        for (Rental rental : rentals) {
+            if (rental.getReturnDate() != null && !rental.getReturnDate().after(today) && rental.getActualReturnDate() == null) {
+                returnBook(rental.getId());
+            }
+        }
+    }
+
     private boolean isBookRented(Long bookId) {
         List<Rental> rentals = rentalRepository.findAll();
         for (Rental rental : rentals) {
-            if (rental.getBook().getId().equals(bookId) && rental.getReturnDate() == null) {
+            if (rental.getBook().getId().equals(bookId) && rental.getActualReturnDate() == null) {
                 return true; // The book is currently rented out
             }
         }
-        return false; // The book is available for rent
+        return false;
     }
 }
