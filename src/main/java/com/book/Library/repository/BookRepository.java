@@ -10,8 +10,6 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-    @Override
-    List<Book> findAll();
     @Query("SELECT b FROM Book b WHERE " +
             "(COALESCE(:title, '') = '' OR b.title LIKE %:title%) AND " +
             "(COALESCE(:author, '') = '' OR b.author LIKE %:author%) AND " +

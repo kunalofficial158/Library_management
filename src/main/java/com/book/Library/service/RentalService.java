@@ -67,7 +67,7 @@ public class RentalService {
         }
     }
 
-//    @Scheduled(cron = "0 */5 * * * ?") //for 5 minutes
+//  @Scheduled(cron = "0 */5 * * * ?") //for 5 minutes
     @Scheduled(cron = "0 0 0 * * ?") // for midnight
     public void checkAndReturnBooks() {
         List<Rental> rentals = rentalRepository.findAll();
